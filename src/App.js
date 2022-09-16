@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from 'react'
 
+const apiURL = 'https://reqres.in/api/users'
+
 function App() {
+  const [users, setUsers] = useState([])
 
-  const [data, setData] = useState([])
-
-  const fetchData = async() => {
-    const result = await fetch('https://reqres.in/api/users')
-    const getResult = await result.json()
-    setData(getResult.data)
-    console.log(getResult.data)
+  const sortByAscendingLastName = () => {
+    console.log('Ascending')
   }
-
+  const sortByDescendingLastName = () => {
+    console.log('Descending')
+  }
+  
   useEffect(() => {
-    fetchData()
+    fetch(apiURL)
+    .then(resp => resp.json())
+    .then(response => {
+      const {data} = response
+      console.log(data);
+      setUsers(data)
+    })
   }, [])
-
-  const sortByAscendingLasName = () => {
-    data.sort()
-  }
 
   return (
     <>
-      <button onClick={() => sortByAscendingLasName}>Ascending</button>
-      {data.map(function(user) {
-        return(<li>{user.first_name} {user.last_name} {user.email}</li>)
-      })}
+      <button onClick={sortByAscendingLastName}>Ascending</button>
+      <button onClick={sortByDescendingLastName}>Descending</button>
+
+      <ul>
+        {users.map(user => {
+          return (
+            <li key={user.id}>
+              {user.first_name} {user.last_name} {user.email} <img src={user.avatar} alt={user.name}/>
+            </li>
+          )
+        })}
+      </ul>
     </>
   );
 }
